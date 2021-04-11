@@ -1,39 +1,17 @@
 # InjectActivityResource
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+研究Qigsaw独立打包，开始发现可以在ActivityLifecycleCallbacks.onActivityPreCreated中注入Resources，后来发现只有Android10+才行，以前的没有，IDE没提示所以一直没发现。
 
-#### 软件架构
-软件架构说明
+不想在编译期间织入代码，想要做到独立打包，所以想找个兼容所有版本的方法。
+如果定义一个基类并在其中重写 getResources 方法是最简单且最高效的办法。但是引用三方库时，没法解决了。
+后来想到一个办法：绝大部分的三方库的基类都是AppCompatActivity，如果在公认的基类中增加代码来实现资源注入，那就太方便了。
 
+研究发现这个办法是确实可行的，于是就写代码了。
+最后原理是这样的：
 
-#### 安装教程
+绝大部分的项目都引用了appcompat，现在把appcompat库中的AppCompatActivity类通过ASM修改增加一个注入资源的方法。然后把修改后的库打包为 **appcompat.qb** ，其它保持不变。再把库发布到本地或公司仓库。最后在项目中替换为新的依赖。
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+```
+    implementation 'androidx.appcompat:appcompat:1.2.0'//大部分的项目用这个
+    implementation 'androidx.appcompat:appcompat.qb:1.2.0'//替换为这个
+```
