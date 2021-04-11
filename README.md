@@ -15,3 +15,4 @@
     implementation 'androidx.appcompat:appcompat:1.2.0'//大部分的项目用这个
     implementation 'androidx.appcompat:appcompat.qb:1.2.0'//替换为这个
 ```
+[更多内容请点击查看](https://www.jianshu.com/p/47e56087b628)
