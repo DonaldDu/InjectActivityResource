@@ -6,7 +6,16 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
-var GRADLE_USER_HOME_DIR = ""
+var GRADLE_USER_HOME_DIR = ""// "C:/Users/Donald/.gradle"
+var MAVEN_LOCAL_DIR = ""// "C:/Users/Donald/.m2/repository/"
+
+/**
+ * MAVEN_LOCAL_URL toMavenLocalDir  "file:/C:/Users/Donald/.m2/repository/" -> "C:/Users/Donald/.m2/repository/"
+ * */
+fun String.toMavenLocalDir(): String {
+    return substringAfter("file:/")
+}
+
 fun String.adaptCode(self: Class<*>, target: Class<*>, placeHolder: Boolean): String {
     var code = this
     if (placeHolder) {
@@ -30,7 +39,11 @@ fun activityInjectorWeave(inputStream: InputStream, self: Class<*>): ByteArray {
 }
 
 fun Class<*>.pathName(): String {
-    return name.replace('.', '/')
+    return name.path()
+}
+
+fun String.path(): String {
+    return replace('.', '/')
 }
 
 fun Class<*>.lPathName(): String {
@@ -130,12 +143,28 @@ fun inject(jar: File, classes: List<Class<*>>): Map<String, EntryReplacement>? {
 }
 
 fun findDepPOM(dep: String): File? {
+    return getGradleDepFolder(dep).findDepPOM(dep) ?: getMavenDepFolder(dep).findDepPOM(dep)
+}
+
+fun findDepFile(dep: String): File? {
+    return getGradleDepFolder(dep).findDepFile(dep) ?: getMavenDepFolder(dep).findDepFile(dep)
+}
+
+private fun getGradleDepFolder(dep: String): File {
     val f21 = File(GRADLE_USER_HOME_DIR, "caches/modules-2/files-2.1")
-    val depFolder = File(f21, dep.replace(':', '/'))
+    return File(f21, dep.replace(':', '/'))
+}
+
+private fun getMavenDepFolder(dep: String): File {
+    val gav = dep.split(':')
+    return File(MAVEN_LOCAL_DIR, "${gav[0].path()}/${gav[1].path()}/${gav[2]}")
+}
+
+private fun File.findDepPOM(dep: String): File? {
     val gav = dep.split(":")
     val pom = "${gav[1]}-${gav[2]}.pom"
     var find: File? = null
-    depFolder.eachFile {
+    eachFile {
         if (it.name == pom) {
             find = it
             return@eachFile
@@ -144,9 +173,8 @@ fun findDepPOM(dep: String): File? {
     return find
 }
 
-fun findDepFile(dep: String): File? {
-    val f21 = File(GRADLE_USER_HOME_DIR, "caches/modules-2/files-2.1")
-    val depFolder = File(f21, dep.replace(':', '/'))
+private fun File.findDepFile(dep: String): File? {
+    val depFolder = this
     val gav = dep.split(":")
     val aar = "${gav[1]}-${gav[2]}.aar"
     val jar = "${gav[1]}-${gav[2]}.jar"

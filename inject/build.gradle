@@ -16,6 +16,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
         buildConfigField "String", 'GRADLE_USER_HOME_DIR', gradle.gradleUserHomeDir.absolutePath.replace("\\", "/").quote()
+        buildConfigField "String", 'MAVEN_LOCAL_URL', repositories.mavenLocal().url.toString().quote()
     }
 
     buildTypes {
