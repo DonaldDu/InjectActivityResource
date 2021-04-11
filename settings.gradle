@@ -1,0 +1,4 @@
+include ':transform'
+include ':inject'
+include ':app'
+rootProject.name = "InjectActivityResource"
