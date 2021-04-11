@@ -8,11 +8,8 @@ import androidx.annotation.NonNull;
 
 import static java.sql.DriverManager.println;
 
+@SuppressWarnings("deprecation")
 public class InjectActivityResource extends Handler {
-    public InjectActivityResource() {
-        super();
-    }
-
     /**
      * 这个方法调用非常频繁，所以建议用JAVA写，以保证没有多余的代码。
      */
