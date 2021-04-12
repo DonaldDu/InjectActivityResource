@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 public class InjectActivityResourceDemo extends AppCompatActivity {
 
     private static Handler injectActivityResource;
-    private Message msg;
+    private final Message msg = new Message();
 
     private void initInjectActivityResource() {
         if (injectActivityResource != null) return;
@@ -38,7 +38,6 @@ public class InjectActivityResourceDemo extends AppCompatActivity {
     public Resources getResources() {
         if (injectActivityResource != null) {
             Resources resources = super.getResources();
-            if (msg == null) msg = new Message();
             msg.obj = resources;
             injectActivityResource.handleMessage(msg);
             return resources;

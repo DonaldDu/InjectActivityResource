@@ -34,8 +34,10 @@ fun String.adaptCode(self: Class<*>, target: Class<*>, placeHolder: Boolean): St
     return code
 }
 
+var SPLIT_INSTALL_HELPER = true
 fun activityInjectorWeave(inputStream: InputStream, self: Class<*>): ByteArray {
-    return ActivityInjector.weave(inputStream, self.pathName(), self.lPathName(), self.superclass.pathName())
+    return if (SPLIT_INSTALL_HELPER) QigsawActivityInjector.weave(inputStream)
+    else ActivityInjector.weave(inputStream, self.pathName(), self.lPathName(), self.superclass.pathName())
 }
 
 fun Class<*>.pathName(): String {
