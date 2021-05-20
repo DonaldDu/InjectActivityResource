@@ -47,7 +47,7 @@ dependencies {
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.name == 'appcompat') {
-            details.useTarget group: details.requested.group, version: details.requested.version, name: 'appcompat.qb'
+//            details.useTarget group: details.requested.group, version: details.requested.version, name: 'appcompat.qb'
         }
     }
 }
