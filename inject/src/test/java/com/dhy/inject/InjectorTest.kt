@@ -1,6 +1,6 @@
 package com.dhy.inject
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ComponentActivity
 import com.dhy.transform.*
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +16,7 @@ class InjectorTest {
         SPLIT_INSTALL_HELPER = true
         val injected = inject(
             listOf(
-                InjectDep("androidx.appcompat:appcompat:1.2.0", listOf(AppCompatActivity::class.java)),
+                InjectDep("androidx.core:core:1.3.2", listOf(ComponentActivity::class.java)),
 //                InjectDep("androidx.appcompat:appcompat:1.1.0", listOf(AppCompatActivity::class.java))
             )
         )
